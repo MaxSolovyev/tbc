@@ -1,0 +1,5 @@
+rootProject.name = 'tbc'
+include 'validation'
+include 'processing'
+include 'common'
+
