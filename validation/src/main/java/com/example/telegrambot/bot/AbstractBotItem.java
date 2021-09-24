@@ -1,7 +1,7 @@
 package com.example.telegrambot.bot;
 
 import com.example.telegrambot.client.reactive.ProcessingReactiveService;
-import com.example.telegrambot.exceptions.BotTypeIsNotFound;
+import com.example.telegrambot.exceptions.NotFoundException;
 import com.example.telegrambot.model.BotInfo;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
@@ -16,9 +16,9 @@ public abstract class AbstractBotItem extends TelegramLongPollingBot {
         this.processingReactiveService = processingReactiveService;
     }
 
-    public static AbstractBotItem getBotItemByType(BotInfo botInfo, ProcessingReactiveService processingReactiveService) throws BotTypeIsNotFound {
+    public static AbstractBotItem getBotItemByType(BotInfo botInfo, ProcessingReactiveService processingReactiveService) throws NotFoundException {
         if (botInfo.getType() == null) {
-            throw new BotTypeIsNotFound();
+            throw new NotFoundException();
         }
         switch (botInfo.getType()) {
             case COMMAND:
@@ -28,7 +28,7 @@ public abstract class AbstractBotItem extends TelegramLongPollingBot {
             case DIALOGFLOW:
                 return new BotItemDialogFlow(botInfo.getName(), botInfo.getToken(), processingReactiveService);
             default:
-                throw new BotTypeIsNotFound();
+                throw new NotFoundException();
         }
     }
 

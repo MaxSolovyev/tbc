@@ -3,7 +3,7 @@ package com.example.telegrambot.service;
 import com.example.telegrambot.bot.AbstractBotItem;
 import com.example.telegrambot.client.reactive.ProcessingReactiveService;
 import com.example.telegrambot.configuration.BotConfiguration;
-import com.example.telegrambot.exceptions.BotTypeIsNotFound;
+import com.example.telegrambot.exceptions.NotFoundException;
 import com.example.telegrambot.model.BotInfo;
 import com.example.telegrambot.repository.BotInfoRepository;
 import org.springframework.stereotype.Service;
@@ -48,7 +48,7 @@ public class BotsListenerService implements BotManagerActions {
                 TelegramLongPollingBot botItem = AbstractBotItem.getBotItemByType(botInfo, processingReactiveService);
                 BotSession botSession = configuration.getTelegramBotsApi().registerBot(botItem);
                 registeredBots.putIfAbsent(botItem.getBotUsername(), botSession);
-            } catch (BotTypeIsNotFound | TelegramApiException ex) {
+            } catch (NotFoundException | TelegramApiException ex) {
                 ex.printStackTrace();
             }
         }
