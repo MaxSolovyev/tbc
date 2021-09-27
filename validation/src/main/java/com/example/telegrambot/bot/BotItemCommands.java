@@ -2,6 +2,7 @@ package com.example.telegrambot.bot;
 
 import com.example.telegrambot.client.reactive.ProcessingReactiveService;
 import com.example.telegrambot.dto.BotMessage;
+import com.example.telegrambot.model.BotInfo;
 import com.example.telegrambot.utils.BotType;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -12,8 +13,8 @@ import java.util.stream.Collectors;
 
 public class BotItemCommands extends AbstractBotItem {
 
-    public BotItemCommands(String botName, String token, ProcessingReactiveService processingReactiveService) {
-        super(botName, token, processingReactiveService);
+    public BotItemCommands(BotInfo botInfo, ProcessingReactiveService processingReactiveService) {
+        super(botInfo, processingReactiveService);
     }
 
     public void onUpdateReceived(Update update) {

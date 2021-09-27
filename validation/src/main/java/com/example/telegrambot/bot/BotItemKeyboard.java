@@ -1,12 +1,13 @@
 package com.example.telegrambot.bot;
 
 import com.example.telegrambot.client.reactive.ProcessingReactiveService;
+import com.example.telegrambot.model.BotInfo;
+import com.example.telegrambot.service.KeyBoardSupplier;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDate;
@@ -21,8 +22,12 @@ public class BotItemKeyboard extends AbstractBotItem {
     private static final String GET_DAY = "get current day";
     private static final String GET_RANDOM = "get random";
 
-    public BotItemKeyboard(String botName, String token, ProcessingReactiveService processingReactiveService) {
-        super(botName, token, processingReactiveService);
+    private final KeyBoardSupplier keyBoardSupplier;
+
+    public BotItemKeyboard(BotInfo botInfo, ProcessingReactiveService processingReactiveService,
+                           KeyBoardSupplier keyBoardSupplier) {
+        super(botInfo, processingReactiveService);
+        this.keyBoardSupplier = keyBoardSupplier;
     }
 
     public void onUpdateReceived(Update update) {
@@ -48,7 +53,7 @@ public class BotItemKeyboard extends AbstractBotItem {
             }
         }
         messageBuilder.text(messageText);
-        messageBuilder.replyMarkup(getKeyboardInline());
+        messageBuilder.replyMarkup(getKeyboardReply());
         try {
             execute(messageBuilder.build());
         } catch (TelegramApiException e) {
@@ -77,16 +82,8 @@ public class BotItemKeyboard extends AbstractBotItem {
         return keyboard;
     }
 
-    private ReplyKeyboardMarkup getKeyboardReply() {
-        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
-        KeyboardRow keyboardRow = new KeyboardRow();
-        keyboardRow.add("one");
-        keyboardRow.add("two");
-        keyboardRow.add("three");
-
-        keyboard.setKeyboard(List.of(keyboardRow));
-
-        return keyboard;
+    private ReplyKeyboard getKeyboardReply() {
+        return keyBoardSupplier.get(this.botInfo.getKeyBoard());
     }
 
     private String getDay() {

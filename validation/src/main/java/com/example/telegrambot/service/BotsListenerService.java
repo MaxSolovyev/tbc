@@ -23,12 +23,17 @@ public class BotsListenerService implements BotManagerActions {
     private final BotInfoRepository repository;
     private final BotConfiguration configuration;
     private final ProcessingReactiveService processingReactiveService;
+    private final KeyBoardSupplier keyBoardSupplier;
     private final Map<String, BotSession> registeredBots;
 
-    public BotsListenerService(BotInfoRepository repository, BotConfiguration configuration, ProcessingReactiveService processingReactiveService) {
+    public BotsListenerService(BotInfoRepository repository,
+                               BotConfiguration configuration,
+                               ProcessingReactiveService processingReactiveService,
+                               KeyBoardSupplier keyBoardSupplier) {
         this.repository = repository;
         this.configuration = configuration;
         this.processingReactiveService = processingReactiveService;
+        this.keyBoardSupplier = keyBoardSupplier;
         registeredBots = new HashMap<>();
     }
 
@@ -45,7 +50,7 @@ public class BotsListenerService implements BotManagerActions {
     public void addBotForListener(BotInfo botInfo) {
         if (!registeredBots.containsKey(botInfo.getName())) {
             try {
-                TelegramLongPollingBot botItem = AbstractBotItem.getBotItemByType(botInfo, processingReactiveService);
+                TelegramLongPollingBot botItem = AbstractBotItem.getBotItemByType(botInfo, processingReactiveService, keyBoardSupplier);
                 BotSession botSession = configuration.getTelegramBotsApi().registerBot(botItem);
                 registeredBots.putIfAbsent(botItem.getBotUsername(), botSession);
             } catch (NotFoundException | TelegramApiException ex) {

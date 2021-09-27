@@ -19,7 +19,7 @@ public class KeyBoard {
     @Enumerated(EnumType.STRING)
     private KeyBoardType type;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "key_board_id")
     private Set<Button> buttons;
 
