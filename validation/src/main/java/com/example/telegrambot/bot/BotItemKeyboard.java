@@ -2,18 +2,17 @@ package com.example.telegrambot.bot;
 
 import com.example.telegrambot.client.reactive.ProcessingReactiveService;
 import com.example.telegrambot.model.BotInfo;
+import com.example.telegrambot.model.keyboard.KeyBoard;
+import com.example.telegrambot.request.KeyBoardRequest;
 import com.example.telegrambot.service.KeyBoardSupplier;
+import com.example.telegrambot.utils.KeyBoardType;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -35,10 +34,17 @@ public class BotItemKeyboard extends AbstractBotItem {
 
         String messageText;
         String chatId;
+
+        KeyBoard currentKeyBoard = this.botInfo.getKeyBoard();
+
         if (update.getMessage() != null) {
             chatId = update.getMessage().getChatId().toString();
             messageBuilder.chatId(chatId);
-            messageText = DEFAULT_MESSAGE;
+            if (currentKeyBoard.getType() == KeyBoardType.INLINE) {
+                messageText = DEFAULT_MESSAGE;
+            } else {
+                messageText = keyBoardSupplier.getAnswer(currentKeyBoard, new KeyBoardRequest(update.getMessage().getText())).getAnswer();
+            }
         } else {
             messageText = update.getCallbackQuery().getData();
             messageBuilder.chatId(update.getCallbackQuery().getMessage().getChatId().toString());
@@ -59,27 +65,6 @@ public class BotItemKeyboard extends AbstractBotItem {
         } catch (TelegramApiException e) {
             System.out.println(e.toString());
         }
-    }
-
-    private InlineKeyboardMarkup getKeyboardInline() {
-        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton();
-        inlineKeyboardButton1.setText(GET_DAY);
-        inlineKeyboardButton1.setCallbackData(GET_DAY);
-        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton();
-        inlineKeyboardButton2.setText(GET_RANDOM);
-        inlineKeyboardButton2.setCallbackData(GET_RANDOM);
-        inlineKeyboardButton2.setCallbackData(GET_RANDOM);
-
-        List<InlineKeyboardButton> keyBoardButtons = new ArrayList<>();
-        keyBoardButtons.add(inlineKeyboardButton1);
-        keyBoardButtons.add(inlineKeyboardButton2);
-
-        List<List<InlineKeyboardButton>> keyBoardPanel = new ArrayList<>();
-        keyBoardPanel.add(keyBoardButtons);
-        keyboard.setKeyboard(keyBoardPanel);
-
-        return keyboard;
     }
 
     private ReplyKeyboard getKeyboardReply() {
