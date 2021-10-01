@@ -11,61 +11,71 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.reactive.server.FluxExchangeResult;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @DisplayName("Controller BotManagerController")
-@WebMvcTest(BotManagerController.class)
+@WebFluxTest(BotManagerController.class)
 public class BotManagerControllerTest {
 
     @MockBean
     BotManagerService botManagerService;
 
     @Autowired
-    MockMvc mockMvc;
+    WebTestClient webTestClient;
 
     @DisplayName("Should invoke '/bot/register' correctly")
     @Test
-    void register() throws Exception {
+    void register() {
         Mockito.doNothing().when(botManagerService).register(any(BotInfo.class));
         ObjectMapper mapper = new ObjectMapper();
         BotInfo botInfo = new BotInfo("bot", "pass", BotType.COMMAND);
-        mockMvc.perform(MockMvcRequestBuilders.post("/bot/register")
+        webTestClient.post()
+                .uri("/bot/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(botInfo))
-        ).andExpect(MockMvcResultMatchers.status().isOk());
+                .body(BodyInserters.fromValue(botInfo))
+                .exchange()
+                .expectStatus().isOk();
     }
 
     @DisplayName("Should invoke '/bot/unregister/{botName}' correctly")
     @Test
-    void unregister() throws Exception {
+    void unregister() {
         Mockito.doNothing().when(botManagerService).unregister(anyString());
-        mockMvc.perform(MockMvcRequestBuilders.get("/bot/unregister/{botName}", "bot")
-        ).andExpect(MockMvcResultMatchers.status().isOk());
+
+        webTestClient.get()
+                .uri("/bot/unregister/{botName}", Map.of("botName", "bot"))
+                .exchange()
+                .expectStatus().isOk();
     }
 
     @DisplayName("Should return correct data from '/bot/readAll'")
     @Test
-    void getAll() throws Exception {
+    void getAll() {
         Mockito.when(botManagerService.getAll()).thenReturn(List.of(new BotDto("bot", "pass", BotType.COMMAND)));
         ObjectMapper mapper = new ObjectMapper();
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/bot/readAll", "bot"))
-                .andReturn();
+
+        FluxExchangeResult<String> result =
+                webTestClient.get()
+                .uri("/bot/readAll")
+                .exchange()
+                        .returnResult(String.class);
+
         Assertions.assertAll("Should return correctly response",
-                () -> Assertions.assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus(), "status is OK"),
-                () -> Assertions.assertEquals(MediaType.APPLICATION_JSON.toString(), result.getResponse().getContentType(), "content type is correct"),
-                () -> Assertions.assertEquals("bot", mapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<BotDto>>() {}).get(0).getName(), "returned data is expected")
+                () -> Assertions.assertEquals(HttpStatus.OK, result.getStatus(), "status is OK"),
+                () -> Assertions.assertEquals(MediaType.APPLICATION_JSON, result.getResponseHeaders().getContentType(), "content type is correct"),
+                () -> Assertions.assertEquals("bot", mapper.readValue(result.getResponseBody().blockFirst(), new TypeReference<List<BotDto>>() {}).get(0).getName(), "returned data is expected")
         );
     }
 
