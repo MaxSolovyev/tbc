@@ -1,6 +1,8 @@
 package com.example.telegrambot.client.reactive;
 
-import com.example.telegrambot.dto.BotMessage;
+import com.example.telegrambot.dto.KeyBoardRequest;
+import com.example.telegrambot.dto.KeyBoardResponse;
+import com.example.telegrambot.utils.ReactionType;
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
@@ -26,16 +28,17 @@ public class ProcessingWebClient {
         this.processingCircuitBreaker = circuitBreakerFactory.create("process");
     }
 
-    public Mono<BotMessage> process(BotMessage message) {
+    public Mono<KeyBoardResponse> process(KeyBoardRequest request) {
         return processingCircuitBreaker.run(
                 webClient
                         .post()
                         .uri("/process")
-                        .body(Mono.just(message), BotMessage.class)
+                        .body(Mono.just(request), KeyBoardRequest.class)
                         .retrieve()
-                        .bodyToMono(BotMessage.class), throwable -> {
+                        .bodyToMono(KeyBoardResponse.class), throwable -> {
                     System.out.println("Error making request to processing service");
-                    return Mono.just(new BotMessage(message.getBotType(), "service unavailable"));
+                    throwable.printStackTrace();
+                    return Mono.just(new KeyBoardResponse(ReactionType.TEXT,  "service unavailable", null));
                 });
     }
 }

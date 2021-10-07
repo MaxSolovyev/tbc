@@ -12,8 +12,13 @@ public class Button {
     private int row;
     private String name;
     private String answer;
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "keyboard_id")
     private KeyBoard keyBoard;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Reaction reaction;
 
     public Button() {
     }
@@ -55,6 +60,14 @@ public class Button {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public Reaction getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(Reaction reaction) {
+        this.reaction = reaction;
     }
 
     @Override

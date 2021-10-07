@@ -1,6 +1,5 @@
 package com.example.telegrambot.model;
 
-import com.example.telegrambot.model.keyboard.KeyBoard;
 import com.example.telegrambot.utils.BotType;
 
 import javax.persistence.*;
@@ -19,9 +18,6 @@ public class BotInfo {
 
     @Enumerated(EnumType.STRING)
     private BotType type;
-
-    @OneToOne
-    KeyBoard keyBoard;
 
     public BotInfo() {
     }
@@ -69,14 +65,6 @@ public class BotInfo {
 
     public void setType(BotType type) {
         this.type = type;
-    }
-
-    public KeyBoard getKeyBoard() {
-        return keyBoard;
-    }
-
-    public void setKeyBoard(KeyBoard keyBoard) {
-        this.keyBoard = keyBoard;
     }
 
     @Override

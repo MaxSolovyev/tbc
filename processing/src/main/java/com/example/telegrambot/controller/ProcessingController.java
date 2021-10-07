@@ -1,6 +1,7 @@
 package com.example.telegrambot.controller;
 
-import com.example.telegrambot.dto.BotMessage;
+import com.example.telegrambot.dto.KeyBoardRequest;
+import com.example.telegrambot.dto.KeyBoardResponse;
 import com.example.telegrambot.service.ProcessingService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +18,8 @@ public class ProcessingController {
     }
 
     @PostMapping("/process")
-    public Mono<BotMessage> process(@RequestBody BotMessage message) {
-        return Mono.fromCallable(() -> processingService.process(message))
+    public Mono<KeyBoardResponse> process(@RequestBody KeyBoardRequest request) {
+        return Mono.fromCallable(() -> processingService.process(request))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 }

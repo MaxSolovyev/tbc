@@ -1,6 +1,5 @@
 package com.example.telegrambot.bot;
 
-import com.example.telegrambot.client.reactive.ProcessingReactiveService;
 import com.example.telegrambot.model.BotInfo;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -8,8 +7,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class BotItemDialogFlow extends AbstractBotItem {
 
-    public BotItemDialogFlow(BotInfo botInfo, ProcessingReactiveService processingReactiveService) {
-        super(botInfo, processingReactiveService);
+    public BotItemDialogFlow(BotInfo botInfo) {
+        super(botInfo);
     }
 
     public void onUpdateReceived(Update update) {

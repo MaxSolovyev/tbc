@@ -1,9 +1,6 @@
 package com.example.telegrambot.bot;
 
-import com.example.telegrambot.client.reactive.ProcessingReactiveService;
-import com.example.telegrambot.dto.BotMessage;
 import com.example.telegrambot.model.BotInfo;
-import com.example.telegrambot.utils.BotType;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -13,8 +10,8 @@ import java.util.stream.Collectors;
 
 public class BotItemCommands extends AbstractBotItem {
 
-    public BotItemCommands(BotInfo botInfo, ProcessingReactiveService processingReactiveService) {
-        super(botInfo, processingReactiveService);
+    public BotItemCommands(BotInfo botInfo) {
+        super(botInfo);
     }
 
     public void onUpdateReceived(Update update) {
@@ -32,16 +29,12 @@ public class BotItemCommands extends AbstractBotItem {
             messageText = update.getChannelPost().getText();
         }
 
-        getProcessingReactiveService().process(new BotMessage(BotType.COMMAND, messageText))
-        .subscribe(botMessage -> {
-            messageBuilder.text(botMessage.getMessage());
+            messageBuilder.text(messageText);
             try {
                 execute(messageBuilder.build());
             } catch (TelegramApiException e) {
                 System.out.println(e.toString());
             }
-        });
-
     }
 
     private String getMessageText(String source) {

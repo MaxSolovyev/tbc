@@ -1,2 +1,16 @@
 server:
   port: 20020
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/teldb
+    username: postgres
+    password: postgres
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

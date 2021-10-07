@@ -1,7 +1,12 @@
-package com.example.telegrambot.request;
+package com.example.telegrambot.dto;
 
-public class KeyBoardRequest {
+import java.io.Serializable;
+
+public class KeyBoardRequest implements Serializable {
     private String request;
+
+    public KeyBoardRequest() {
+    }
 
     public KeyBoardRequest(String request) {
         this.request = request;
@@ -9,6 +14,10 @@ public class KeyBoardRequest {
 
     public String getRequest() {
         return request;
+    }
+
+    public void setRequest(String request) {
+        this.request = request;
     }
 
     @Override

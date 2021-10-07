@@ -1,17 +1,17 @@
-package com.example.telegrambot.model.dto;
+package com.example.telegrambot.dto;
 
 public class ButtonDto {
     private int row;
     private String name;
-    private String answer;
+    private ReactionDto reaction;
 
     public ButtonDto() {
     }
 
-    public ButtonDto(int row, String name, String answer) {
+    public ButtonDto(int row, String name, ReactionDto reaction) {
         this.row = row;
         this.name = name;
-        this.answer = answer;
+        this.reaction = reaction;
     }
 
     public int getRow() {
@@ -30,12 +30,12 @@ public class ButtonDto {
         this.name = name;
     }
 
-    public String getAnswer() {
-        return answer;
+    public ReactionDto getReaction() {
+        return reaction;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setReaction(ReactionDto reaction) {
+        this.reaction = reaction;
     }
 
     @Override
@@ -43,7 +43,6 @@ public class ButtonDto {
         return "ButtonDto{" +
                 "row=" + row +
                 ", name='" + name + '\'' +
-                ", answer='" + answer + '\'' +
                 '}';
     }
 }

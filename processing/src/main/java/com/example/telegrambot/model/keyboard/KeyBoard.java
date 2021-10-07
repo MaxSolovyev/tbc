@@ -20,8 +20,12 @@ public class KeyBoard {
     private KeyBoardType type;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "key_board_id")
+    @JoinColumn(name = "keyboard_id")
     private Set<Button> buttons;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "keyboard_id")
+    private Set<Reaction> reactions;
 
     public KeyBoard() {
     }
@@ -63,6 +67,14 @@ public class KeyBoard {
 
     public void setButtons(Set<Button> buttons) {
         this.buttons = buttons;
+    }
+
+    public Set<Reaction> getReactions() {
+        return reactions;
+    }
+
+    public void setReactions(Set<Reaction> reactions) {
+        this.reactions = reactions;
     }
 
     @Override

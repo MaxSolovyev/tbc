@@ -1,8 +1,9 @@
 package com.example.telegrambot.client.reactive;
 
-import com.example.telegrambot.dto.BotMessage;
+import com.example.telegrambot.dto.KeyBoardRequest;
+import com.example.telegrambot.dto.KeyBoardResponse;
 import reactor.core.publisher.Mono;
 
 public interface ProcessingReactiveService {
-    Mono<BotMessage> process(BotMessage botMessage);
+    Mono<KeyBoardResponse> process(KeyBoardRequest request);
 }

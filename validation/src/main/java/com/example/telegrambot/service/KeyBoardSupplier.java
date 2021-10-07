@@ -1,16 +1,14 @@
 package com.example.telegrambot.service;
 
-import com.example.telegrambot.exceptions.NotFoundException;
-import com.example.telegrambot.model.keyboard.KeyBoard;
-import com.example.telegrambot.request.KeyBoardAnswer;
-import com.example.telegrambot.request.KeyBoardRequest;
+import com.example.telegrambot.dto.KeyBoardDto;
+import com.example.telegrambot.dto.KeyBoardRequest;
+import com.example.telegrambot.dto.KeyBoardResponse;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import reactor.core.publisher.Mono;
 
 public interface KeyBoardSupplier {
 
-    ReplyKeyboard get(String name) throws NotFoundException;
+    ReplyKeyboard get(KeyBoardDto keyBoardDto);
 
-    ReplyKeyboard get(KeyBoard keyBoard);
-
-    KeyBoardAnswer getAnswer(KeyBoard keyBoard, KeyBoardRequest keyBoardRequest);
+    Mono<KeyBoardResponse> getResponse(KeyBoardRequest keyBoardRequest);
 }

@@ -1,4 +1,4 @@
-package com.example.telegrambot.model.dto;
+package com.example.telegrambot.dto;
 
 import com.example.telegrambot.utils.KeyBoardType;
 
