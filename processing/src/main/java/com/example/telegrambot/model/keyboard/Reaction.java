@@ -16,7 +16,7 @@ public class Reaction {
     private ReactionType type;
     private String text;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "keyboard_id", referencedColumnName = "id")
     private KeyBoard keyboard;
 
