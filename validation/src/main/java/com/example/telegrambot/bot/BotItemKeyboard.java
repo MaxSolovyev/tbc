@@ -35,10 +35,11 @@ public class BotItemKeyboard extends AbstractBotItem {
 
         keyBoardSupplier.getResponse(new KeyBoardRequest(userRequest))
                 .subscribe(keyBoardResponse -> {
-                    String message = DEFAULT_MESSAGE;
+                    String message;
                     if (keyBoardResponse.getType() == ReactionType.TEXT) {
                         message = keyBoardResponse.getText();
                     } else {
+                        message = keyBoardResponse.getKeyboard().getDescription();
                         messageBuilder.replyMarkup(keyBoardSupplier.get(keyBoardResponse.getKeyboard()));
                     }
                     messageBuilder.text(message);

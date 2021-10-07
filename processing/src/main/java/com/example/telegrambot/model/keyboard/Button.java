@@ -11,7 +11,6 @@ public class Button {
     private long id;
     private int row;
     private String name;
-    private String answer;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "keyboard_id")
@@ -23,11 +22,10 @@ public class Button {
     public Button() {
     }
 
-    public Button(long id, int row, String name, String answer) {
+    public Button(long id, int row, String name) {
         this.id = id;
         this.row = row;
         this.name = name;
-        this.answer = answer;
     }
 
     public long getId() {
@@ -54,14 +52,6 @@ public class Button {
         this.name = name;
     }
 
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
     public Reaction getReaction() {
         return reaction;
     }
@@ -76,7 +66,6 @@ public class Button {
                 "id=" + id +
                 ", row=" + row +
                 ", name='" + name + '\'' +
-                ", answer='" + answer + '\'' +
                 '}';
     }
 }
