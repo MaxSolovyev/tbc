@@ -2,11 +2,12 @@ package com.example.telegrambot.repository;
 
 import com.example.telegrambot.model.keyboard.Button;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+import java.util.Optional;
 
-@Repository
 public interface ButtonRepository extends JpaRepository<Button, Long> {
-    List<Button> findByName(String name);
+
+    @Query("SELECT b FROM Button b LEFT JOIN FETCH b.reaction r WHERE b.name = :name")
+    Optional<Button> findByName(String name);
 }

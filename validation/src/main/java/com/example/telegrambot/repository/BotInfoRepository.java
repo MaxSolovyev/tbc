@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface BotInfoRepository extends JpaRepository<BotInfo, Long> {
 
     List<BotInfo> findByName(String name);

@@ -20,11 +20,11 @@ public class KeyBoard {
     @Enumerated(EnumType.STRING)
     private KeyBoardType type;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "keyboard_id")
     private Set<Button> buttons;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "keyboard_id")
     private Set<Reaction> reactions;
 
