@@ -1,6 +1,6 @@
 package com.example.telegrambot.bot;
 
-import com.example.telegrambot.dto.KeyBoardRequest;
+import com.example.telegrambot.dto.ProcessingRequest;
 import com.example.telegrambot.model.BotInfo;
 import com.example.telegrambot.service.KeyBoardSupplier;
 import com.example.telegrambot.utils.ReactionType;
@@ -24,16 +24,25 @@ public class BotItemKeyboard extends AbstractBotItem {
         String userRequest = "";
         String chatId;
 
+        ProcessingRequest processingRequest = new ProcessingRequest();
         if (update.getMessage() != null) {
+            //реакция на обычное сообщение
             chatId = update.getMessage().getChatId().toString();
             messageBuilder.chatId(chatId);
             messageBuilder.text(DEFAULT_MESSAGE);
+            processingRequest.setRequestType(ReactionType.TEXT);
+            userRequest = update.getMessage().getText();
         } else {
+            //реакция на клавиатуру
             userRequest = update.getCallbackQuery().getData();
-            messageBuilder.chatId(update.getCallbackQuery().getMessage().getChatId().toString());
+            chatId = update.getCallbackQuery().getMessage().getChatId().toString();
+            messageBuilder.chatId(chatId);
+            processingRequest.setRequestType(ReactionType.KEYBOARD);
         }
+        processingRequest.setRequest(userRequest);
+        processingRequest.setChatId(chatId);
 
-        keyBoardSupplier.getResponse(new KeyBoardRequest(userRequest))
+        keyBoardSupplier.getResponse(processingRequest)
                 .subscribe(keyBoardResponse -> {
                     String message;
                     if (keyBoardResponse.getType() == ReactionType.TEXT) {

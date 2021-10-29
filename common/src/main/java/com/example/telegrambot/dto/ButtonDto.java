@@ -1,6 +1,7 @@
 package com.example.telegrambot.dto;
 
 public class ButtonDto {
+    private int id;
     private int row;
     private String name;
     private ReactionDto reaction;
@@ -12,6 +13,14 @@ public class ButtonDto {
         this.row = row;
         this.name = name;
         this.reaction = reaction;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getRow() {

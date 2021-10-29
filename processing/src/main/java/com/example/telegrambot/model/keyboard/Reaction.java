@@ -1,5 +1,6 @@
 package com.example.telegrambot.model.keyboard;
 
+import com.example.telegrambot.model.question.Question;
 import com.example.telegrambot.utils.ReactionType;
 
 import javax.persistence.*;
@@ -17,8 +18,11 @@ public class Reaction {
     private String text;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "keyboard_id", referencedColumnName = "id")
+//    @JoinColumn(name = "keyboard_id", referencedColumnName = "id")
     private KeyBoard keyboard;
+
+    @ManyToOne
+    private Question nextQuestion;
 
     public Reaction() {
     }
@@ -65,6 +69,10 @@ public class Reaction {
 
     public void setKeyboard(KeyBoard keyboard) {
         this.keyboard = keyboard;
+    }
+
+    public Question getNextQuestion() {
+        return nextQuestion;
     }
 
     @Override

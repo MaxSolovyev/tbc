@@ -3,7 +3,7 @@ package com.example.telegrambot.service;
 import com.example.telegrambot.client.reactive.ProcessingReactiveService;
 import com.example.telegrambot.dto.ButtonDto;
 import com.example.telegrambot.dto.KeyBoardDto;
-import com.example.telegrambot.dto.KeyBoardRequest;
+import com.example.telegrambot.dto.ProcessingRequest;
 import com.example.telegrambot.dto.KeyBoardResponse;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -32,8 +32,8 @@ public class KeyBoardSupplierImpl implements KeyBoardSupplier {
     }
 
     @Override
-    public Mono<KeyBoardResponse> getResponse(KeyBoardRequest keyBoardRequest) {
-        return processingReactiveService.process(keyBoardRequest);
+    public Mono<KeyBoardResponse> getResponse(ProcessingRequest processingRequest) {
+        return processingReactiveService.process(processingRequest);
     }
 
     private ReplyKeyboard buildKeyBoard(KeyBoardDto keyBoard) {
@@ -68,7 +68,7 @@ public class KeyBoardSupplierImpl implements KeyBoardSupplier {
             buttons.forEach(button -> {
                 InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
                 inlineKeyboardButton.setText(button.getName());
-                inlineKeyboardButton.setCallbackData(button.getName());
+                inlineKeyboardButton.setCallbackData(String.valueOf(button.getId()));
 
                 keyBoardButtons.add(inlineKeyboardButton);
             });

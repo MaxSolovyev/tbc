@@ -1,6 +1,6 @@
 package com.example.telegrambot.client.reactive;
 
-import com.example.telegrambot.dto.KeyBoardRequest;
+import com.example.telegrambot.dto.ProcessingRequest;
 import com.example.telegrambot.dto.KeyBoardResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -15,7 +15,7 @@ public class ProcessingReactiveServiceImpl implements ProcessingReactiveService 
     }
 
     @Override
-    public Mono<KeyBoardResponse> process(KeyBoardRequest request) {
+    public Mono<KeyBoardResponse> process(ProcessingRequest request) {
         return processingWebClient.process(request);
     }
 }

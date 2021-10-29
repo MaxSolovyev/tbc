@@ -1,4 +1,5 @@
 rootProject.name = 'tbc'
+include 'account'
 include 'validation'
 include 'processing'
 include 'common'

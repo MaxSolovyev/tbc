@@ -10,4 +10,8 @@ public interface ButtonRepository extends JpaRepository<Button, Long> {
 
     @Query("SELECT b FROM Button b LEFT JOIN FETCH b.reaction r WHERE b.name = :name")
     Optional<Button> findByName(String name);
+
+    @Query("SELECT b FROM Button b LEFT JOIN FETCH b.reaction r WHERE b.id = :id")
+    Optional<Button> findById(long id);
+
 }

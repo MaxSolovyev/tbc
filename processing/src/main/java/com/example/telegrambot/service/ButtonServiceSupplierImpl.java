@@ -16,8 +16,15 @@ public class ButtonServiceSupplierImpl implements ButtonServiceSupplier {
     }
 
     @Override
-    @Cacheable(value="buttons")
+    @Cacheable(value="buttonsByName")
     public Button getButtonByName(String name) throws NotFoundException {
         return buttonRepository.findByName(name).orElseThrow(NotFoundException::new);
     }
+
+    @Override
+    @Cacheable(value="buttonsById")
+    public Button getButtonById(long id) throws NotFoundException {
+        return buttonRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
 }
