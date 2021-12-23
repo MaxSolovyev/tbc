@@ -29,4 +29,10 @@ public class BotManagerController {
     public List<BotDto> getAll() {
         return botManagerService.getAll();
     }
+
+    @GetMapping("/bot/check")
+    public String check() {
+        return "check ok";
+    }
+
 }

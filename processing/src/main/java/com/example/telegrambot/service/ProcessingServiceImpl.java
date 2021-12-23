@@ -4,34 +4,61 @@ import com.example.telegrambot.client.AccountReactiveService;
 import com.example.telegrambot.dto.*;
 import com.example.telegrambot.exception.NotFoundException;
 import com.example.telegrambot.model.keyboard.Button;
+import com.example.telegrambot.model.keyboard.ButtonNativeDto;
+import com.example.telegrambot.model.keyboard.KeyBoard;
 import com.example.telegrambot.model.keyboard.Reaction;
+import com.example.telegrambot.model.mapper.ButtonMapper;
 import com.example.telegrambot.model.mapper.KeyBoardMapper;
 import com.example.telegrambot.model.question.CheckList;
 import com.example.telegrambot.model.question.Question;
+import com.example.telegrambot.repository.ButtonRepository;
 import com.example.telegrambot.repository.KeyBoardRepository;
 import com.example.telegrambot.repository.QuestionRepository;
+import com.example.telegrambot.utils.KeyBoardType;
 import com.example.telegrambot.utils.ReactionType;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Stream;
+import org.springframework.util.StringUtils;
 
 @Service
 public class ProcessingServiceImpl implements ProcessingService {
     private static final String FIRST_KEYBOARD = "main_menu";
 
     private final ButtonServiceSupplier buttonServiceSupplier;
+    private final ButtonRepository buttonRepository;
     private final KeyBoardRepository keyBoardRepository;
     private final AccountReactiveService accountReactiveService;
     private final QuestionRepository questionRepository;
+    private final EntityManager entityManager;
 
     public ProcessingServiceImpl(ButtonServiceSupplier buttonServiceSupplier,
-                                 KeyBoardRepository keyBoardRepository,
-                                 AccountReactiveService accountReactiveService,
-                                 QuestionRepository questionRepository) {
+                KeyBoardRepository keyBoardRepository,
+                AccountReactiveService accountReactiveService,
+                QuestionRepository questionRepository,
+                ButtonRepository buttonRepository,
+                EntityManager entityManager) {
         this.buttonServiceSupplier = buttonServiceSupplier;
         this.keyBoardRepository = keyBoardRepository;
         this.accountReactiveService = accountReactiveService;
         this.questionRepository = questionRepository;
+        this.buttonRepository = buttonRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -125,5 +152,71 @@ public class ProcessingServiceImpl implements ProcessingService {
         }
 
         return keyBoardResponse;
+    }
+
+    @Override
+    public ButtonDto getButton(int buttonId) {
+        Optional<Button> buttonOptional = buttonRepository.findById((long) buttonId);
+
+        if (buttonOptional.isEmpty()) {
+            return null;
+        } else {
+            return ButtonMapper.instance.toDto(buttonOptional.get());
+        }
+    }
+
+    public ButtonDto getNativeById(int buttonId) {
+        Specification<ButtonDto> spec;
+
+        var list = Collections.singletonList("1");
+
+        return ButtonMapper.instance.toDto(buttonRepository.findNativeById((long) buttonId).get(0));
+    }
+
+    @Override
+    public List<Object[]> getViaCriteriaById(int buttonId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+        Root<Button> fromClause = criteriaQuery.from(Button.class);
+        Join<Button, KeyBoard> joinClause = fromClause.join("keyBoard", JoinType.LEFT);
+        Selection<?> keyBoardName = joinClause.get("name");
+        Selection<?> buttonName = fromClause.get("name");
+        Selection<KeyBoardType> keyBoardType = joinClause.get("type");
+        criteriaQuery.select(criteriaBuilder.array(keyBoardName, keyBoardType, buttonName));
+
+        TypedQuery<Object[]> query = entityManager.createQuery(criteriaQuery);
+        List<Object[]> results = query.getResultList();
+
+        return results;
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<Button> criteriaQuery = criteriaBuilder.createQuery(Button.class);
+//        Root<Button> itemRoot = criteriaQuery.from(Button.class);
+//        Predicate predicateForId = criteriaBuilder.equal(itemRoot.get("id"), buttonId);
+//        criteriaQuery.where(predicateForId);
+//        return entityManager.createQuery(criteriaQuery).getResultList().stream().map(
+//            ButtonMapper.instance::toDto).collect(Collectors.toList());
+    }
+
+    public static Specification<ButtonDto> getSpec() {
+
+        return (r, cq, cb) -> {
+            CriteriaBuilder criteriaBuilder = null;
+            return criteriaBuilder.equal(null, 1);
+        };
+    }
+
+    static class SpecificationImpl<ButtonDto> implements Specification<com.example.telegrambot.dto.ButtonDto> {
+
+        @Override
+        public Predicate toPredicate(Root<com.example.telegrambot.dto.ButtonDto> root,
+            CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+            return null;
+        }
+
+        @Override
+        public Specification<com.example.telegrambot.dto.ButtonDto> or(
+            Specification<com.example.telegrambot.dto.ButtonDto> other) {
+            return Specification.super.or(other);
+        }
     }
 }

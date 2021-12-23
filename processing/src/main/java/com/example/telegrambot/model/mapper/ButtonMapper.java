@@ -15,6 +15,6 @@ public interface ButtonMapper {
     Button toDomainObject(ButtonDto buttonDto);
 
     @Mapping(target = "reaction", ignore = true)
-    ButtonDto toDomainObject(Button button);
+    ButtonDto toDto(Button button);
 
 }

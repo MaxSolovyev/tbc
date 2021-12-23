@@ -23,6 +23,8 @@ dependencies {
 	implementation 'org.telegram:telegrambots-spring-boot-starter:5.3.0'
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
 
+	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.2'
+
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
